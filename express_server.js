@@ -11,12 +11,15 @@ const urlDatabase = {
 };
 
 function generateRandomString() {
-  let string = Math.random().toString(36).substring(7);
-  console.log('random string ', string);
-  return string;
+  var result           = '';
+  var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for ( var i = 0; i < 6; i++ ) {
+     result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
 }
 
-generateRandomString();
 
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -49,6 +52,8 @@ app.get("/urls/:shortURL", (req,res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);
-  res.send("Ok");
+  let random = generateRandomString()
+  urlDatabase[random] = req.body.longURL;
+  res.redirect(`/urls/${random}`);
+  console.log('test');
 });
