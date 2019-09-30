@@ -11,13 +11,12 @@ const urlDatabase = {
 };
 
 function generateRandomString() {
-  let string = '';
-  for (let i = 0; i < 6; i++) {
-    let j = Math.random().toString(36).substring(7);
-    string += j;
-  }
+  let string = Math.random().toString(36).substring(7);
+  console.log('random string ', string);
   return string;
 }
+
+generateRandomString();
 
 app.get("/", (req, res) => {
   res.send("Hello!");
