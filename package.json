@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/duncan-mann/tinyapp/issues"
   },
-  "homepage": "https://github.com/duncan-mann/tinyapp#readme"
+  "homepage": "https://github.com/duncan-mann/tinyapp#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
