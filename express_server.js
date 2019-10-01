@@ -40,7 +40,6 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req,res) => {
-  console.log(req.cookies);
   let templateVars = {urls: urlDatabase, username: req.cookies["username"] };
   res.render("urls_index", templateVars);
 });
@@ -85,6 +84,11 @@ app.post("/login", (req,res) => {
   res.cookie('username', req.body.username);
   res.redirect("/urls");
   // console.log(req.body);
+})
+
+app.post("/logout", (req, res) => {
+  res.clearCookie('username');
+  res.redirect('/urls');
 })
 
 
