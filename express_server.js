@@ -52,8 +52,7 @@ app.get("/urls/:shortURL", (req,res) => {
 });
 
 app.get("/u/:shortURL", (req,res) => {
-  const longURL = urlDatabase[req.params.shortURL];
-  // console.log(longURL);
+  const longURL = urlDatabase[req.params.shortURL]
   res.redirect(longURL);
 });
 
@@ -72,15 +71,17 @@ app.post("/urls/:shortURL/editURL", (req,res) => {
   res.redirect("/urls/" + req.params.shortURL)
 });
 
-
-
-
 app.post("/urls", (req, res) => {
   let random = generateRandomString()
   urlDatabase[random] = req.body.longURL;
   res.redirect(`/urls/${random}`);
 });
 
+app.post("/login", (req,res) => {
+  res.cookie('username', req.body.username);
+  res.redirect("/urls");
+  // console.log(req.body);
+})
 
 
 
