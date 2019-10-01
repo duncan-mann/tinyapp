@@ -7,6 +7,8 @@ app.set("view engine", "ejs");
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}))
 
+const users = {};
+
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -47,17 +49,23 @@ app.get("/urls", (req,res) => {
 app.get("/urls/new", (req,res) => {
   let templateVars = {username: req.cookies["username"]}
   res.render("urls_new", templateVars);
-})
+});
 
 app.get("/urls/:shortURL", (req,res) => {
-  let templateVars = {shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]};
+  let templateVars = {shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: req.cookies["username"]};
   res.render("urls_show", templateVars);
+});
+
+app.get("/register", (req, res) => {
+  let templateVars = {username: req.cookies["username"]}
+  res.render("register_user", templateVars);
 });
 
 app.get("/u/:shortURL", (req,res) => {
   const longURL = urlDatabase[req.params.shortURL]
   res.redirect(longURL);
 });
+
 
 app.post("/urls/:shortURL/delete", (req,res) => {
   delete urlDatabase[req.params.shortURL];
@@ -90,6 +98,22 @@ app.post("/logout", (req, res) => {
   res.clearCookie('username');
   res.redirect('/urls');
 })
+
+app.post("/register", (req,res) => {
+  const userId = generateRandomString();
+
+  users[userId] = {
+    id: userId,
+    email: req.body.email,
+    password: req.body.password
+  }
+
+  res.cookie('user_id', userId);
+  res.redirect('/urls');
+
+  console.log(users);
+})
+
 
 
 
