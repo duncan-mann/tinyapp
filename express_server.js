@@ -78,7 +78,7 @@ app.get("/urls", (req,res) => {
   if (userId === undefined) {
     res.redirect("/login");
   } 
-
+  //Use urlsForUser to create object full of URLs created by that specific user.
   let userURLs = urlsForUser(user_id);
 
   let templateVars = {urls: userURLs, userId};
@@ -123,14 +123,26 @@ app.get("/u/:shortURL", (req,res) => {
 
 
 app.post("/urls/:shortURL/delete", (req,res) => {
-  console.log(urlDatabase[req.params.shortURL])
+  console.log(req.params.shortURL);
+  let userId = users[req.cookies["user_id"]];
+  console.log('userId', userId);
+  if (userId && userId.id === urlDatabase[req.params.shortURL].userID) {
   delete urlDatabase[req.params.shortURL];
   res.redirect("/urls");
+  } else {
+    res.send('Not permitted to delete this URL!');
+  }
 
 });
 
 app.post("/urls/:shortURL/edit", (req,res) => {
+  let userId = users[req.cookies["user_id"]];
+
+  if (userId && userId.id === urlDatabase[req.params.shortURL].id) {
   res.redirect("/urls/" + req.params.shortURL);
+  } else {
+  res.send('Not permitted to edit this URL!\n');
+}
 });
 
 app.post("/urls/:shortURL/editURL", (req,res) => {
@@ -183,4 +195,4 @@ app.post("/register", (req,res) => {
 
 
 
-
+//CjnW4W
