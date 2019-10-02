@@ -57,7 +57,19 @@ app.get("/urls.json", (req,res) => {
 
 app.get("/urls", (req,res) => {
   let userId = users[req.cookies["user_id"]];
-  let templateVars = {urls: urlDatabase, userId};
+  let userURLs = {};
+
+  for (let url in urlDatabase) {
+    if (urlDatabase[url].userID === req.cookies["user_id"]) {
+      userURLs.longURL = urlDatabase[url].longURL;
+    } 
+  }
+
+  if (req.cookies["user_id"] === undefined) {
+    userURLs = {}; // Resets userURLs after a user logs out and user_id cookie is cleared.
+  }
+
+  let templateVars = {urls: userURLs, userId};
   res.render("urls_index", templateVars);
 });
 
@@ -109,7 +121,7 @@ app.post("/urls/:shortURL/edit", (req,res) => {
 
 app.post("/urls/:shortURL/editURL", (req,res) => {
   urlDatabase[req.params.shortURL].longURL = req.body.newURL;
-  res.redirect("/urls/" + req.params.shortURL)
+  res.redirect("/urls/" + req.params.shortURL);
 });
 
 app.post("/urls", (req, res) => {
