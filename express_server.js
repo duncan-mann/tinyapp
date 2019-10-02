@@ -38,10 +38,25 @@ function checkEmails(req, res) {
       res.send('Email already registered!');
       return true;
     }
-  };
-
-  return false;
+  }
 };
+
+
+  function urlsForUser(id) {
+
+    let userURLs = {};
+  
+    for (let url in urlDatabase) {
+      if (urlDatabase[url].userID === id) {
+        userURLs[url] = urlDatabase[url].longURL;
+      } 
+    }
+  
+    if (id === undefined) {
+      userURLs = {}; // Resets userURLs after a user logs out and user_id cookie is cleared.
+    }
+    return userURLs;
+  };
 
 app.get("/", (req, res) => {
   res.redirect("/urls");
@@ -56,21 +71,19 @@ app.get("/urls.json", (req,res) => {
 });
 
 app.get("/urls", (req,res) => {
+  let user_id = req.cookies["user_id"];
   let userId = users[req.cookies["user_id"]];
-  let userURLs = {};
 
-  for (let url in urlDatabase) {
-    if (urlDatabase[url].userID === req.cookies["user_id"]) {
-      userURLs.longURL = urlDatabase[url].longURL;
-    } 
-  }
+  // Redirect user to login page if not logged in
+  if (userId === undefined) {
+    res.redirect("/login");
+  } 
 
-  if (req.cookies["user_id"] === undefined) {
-    userURLs = {}; // Resets userURLs after a user logs out and user_id cookie is cleared.
-  }
+  let userURLs = urlsForUser(user_id);
 
   let templateVars = {urls: userURLs, userId};
   res.render("urls_index", templateVars);
+
 });
 
 app.get("/urls/new", (req,res) => {
@@ -110,6 +123,7 @@ app.get("/u/:shortURL", (req,res) => {
 
 
 app.post("/urls/:shortURL/delete", (req,res) => {
+  console.log(urlDatabase[req.params.shortURL])
   delete urlDatabase[req.params.shortURL];
   res.redirect("/urls");
 
