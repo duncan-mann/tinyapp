@@ -9,28 +9,20 @@
       </button>
 
       <!-- My URLS / Create New URL Buttons -->
-      <div class="collapse navbar-collapse d-flex" id="navbarNavAltMarkup">
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
           <a class="nav-item nav-link" href="/urls">My URLs</a>
           <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-        </div>
-          <% if (username === undefined) { %>
-
-      <!-- Login Form -->
-      <div class = "ml-auto">
-            <form method="POST" action="/login" class ="d-flex">
-              <input type="text" name ="username" class = "form-control form-control-sm my-auto mx-3" placeholder="Enter Username" style="text-align: center">
-              <input type="submit" class = "btn btn-outline-primary">
+          <a class="nav-item nav-link" href="/register">Register</a>
+          <% if (userId === undefined) { %>
+          <a class="nav-item nav-link" href="/login">Login</a>
+          <% } else { %>
+            <p>Logged in as : <%= userId.email %></p>
+            <form method = "POST" action = "/logout">
+              <input type = "submit" value="Logout">
             </form>
-      </div>
-        <% } else { %>
-      <div class = "ml-auto d-flex">
-        <p class ="my-auto mx-3">Logged in as : <%= username %></p>
-        <form method = "POST" action="/logout">
-          <input type = "submit" value="Logout" class = "btn btn-outline-primary">
-        </form>
-      </div>
-        <% } %>
+            <% } %>
+        </div>
       </div>
     </nav>
   </header>

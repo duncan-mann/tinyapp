@@ -44,7 +44,7 @@ function checkEmails(req, res) {
 };
 
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  res.redirect("/urls");
 });
 
 app.listen(PORT, () => {
@@ -60,23 +60,33 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req,res) => {
-  let templateVars = {urls: urlDatabase, username: req.cookies["username"] };
+  let userId = users[req.cookies["user_id"]];
+  let templateVars = {urls: urlDatabase, userId};
   res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req,res) => {
-  let templateVars = {username: req.cookies["username"]}
+  let userId = users[req.cookies["user_id"]];
+  let templateVars = {userId};
   res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:shortURL", (req,res) => {
-  let templateVars = {shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: req.cookies["username"]};
+  let userId = users[req.cookies["user_id"]];
+  let templateVars = {shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], userId};
   res.render("urls_show", templateVars);
 });
 
 app.get("/register", (req, res) => {
-  let templateVars = {username: req.cookies["username"]}
+  let userId = users[req.cookies["user_id"]];
+  let templateVars = {userId}
   res.render("register_user", templateVars);
+});
+
+app.get("/login", (req, res) => {
+  let userId = users[req.cookies["user_id"]];
+  let templateVars = {userId}
+  res.render("login", templateVars);
 });
 
 app.get("/u/:shortURL", (req,res) => {
@@ -106,19 +116,24 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${random}`);
 });
 
-app.post("/login", (req,res) => {
-  res.cookie('username', req.body.username);
+app.post("/loginUser", (req,res) => {
+  console.log(users);
+  for(let user in users) {
+  if (req.body.email === users[user].email && req.body.password === users[user].password) {
+    res.cookie('user_id', users[user].id);
+    console.log('user', user);
+    console.log('cookie', req.cookies["user_id"]);
+  }
+}
   res.redirect("/urls");
-  // console.log(req.body);
 })
 
 app.post("/logout", (req, res) => {
-  res.clearCookie('username');
+  res.clearCookie('user_id');
   res.redirect('/urls');
 })
 
 app.post("/register", (req,res) => {
-
   if (checkEmails(req, res)) {
     return;
   };
@@ -130,10 +145,8 @@ app.post("/register", (req,res) => {
     password: req.body.password
   }
 
-  res.cookie('user_id', userId);
   res.redirect('/urls');
 
-  
 })
 
 
