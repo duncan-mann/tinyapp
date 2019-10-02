@@ -24,6 +24,24 @@ function generateRandomString() {
   return result;
 }
 
+function checkEmails(req, res) {
+
+  if (req.body.email === '' || req.body.password === '') {
+    res.status(404);
+    res.send('Invalid email or password!');
+    return true;
+  }
+
+  for(let user in users) {
+    if (req.body.email === users[user].email) {
+      res.status(400);
+      res.send('Email already registered!');
+      return true;
+    }
+  }
+
+  return false;
+};
 
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -100,8 +118,12 @@ app.post("/logout", (req, res) => {
 })
 
 app.post("/register", (req,res) => {
-  const userId = generateRandomString();
 
+  if (checkEmails(req, res)) {
+    return;
+  };
+
+  const userId = generateRandomString();
   users[userId] = {
     id: userId,
     email: req.body.email,
@@ -111,7 +133,7 @@ app.post("/register", (req,res) => {
   res.cookie('user_id', userId);
   res.redirect('/urls');
 
-  console.log(users);
+  
 })
 
 
