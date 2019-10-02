@@ -30,7 +30,7 @@ function checkEmails(req, res) {
     res.status(404);
     res.send('Invalid email or password!');
     return true;
-  }
+  };
 
   for(let user in users) {
     if (req.body.email === users[user].email) {
@@ -38,7 +38,7 @@ function checkEmails(req, res) {
       res.send('Email already registered!');
       return true;
     }
-  }
+  };
 
   return false;
 };
@@ -53,10 +53,6 @@ app.listen(PORT, () => {
 
 app.get("/urls.json", (req,res) => {
   res.json(urlDatabase);
-});
-
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World<b></body></html>\n");
 });
 
 app.get("/urls", (req,res) => {
@@ -84,6 +80,7 @@ app.get("/register", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
+  console.log(users);
   let userId = users[req.cookies["user_id"]];
   let templateVars = {userId}
   res.render("login", templateVars);
@@ -117,21 +114,19 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/loginUser", (req,res) => {
-  console.log(users);
   for(let user in users) {
-  if (req.body.email === users[user].email && req.body.password === users[user].password) {
-    res.cookie('user_id', users[user].id);
-    console.log('user', user);
-    console.log('cookie', req.cookies["user_id"]);
-  }
-}
-  res.redirect("/urls");
-})
+    if (req.body.email === users[user].email && req.body.password === users[user].password) {
+      res.cookie('user_id', users[user].id);
+      res.redirect("/urls");
+    }
+  } 
+  res.send("Incorrect email/password!");
+});
 
 app.post("/logout", (req, res) => {
   res.clearCookie('user_id');
   res.redirect('/urls');
-})
+});
 
 app.post("/register", (req,res) => {
   if (checkEmails(req, res)) {
@@ -147,7 +142,7 @@ app.post("/register", (req,res) => {
 
   res.redirect('/urls');
 
-})
+});
 
 
 
