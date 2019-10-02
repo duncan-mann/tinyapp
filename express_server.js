@@ -138,7 +138,7 @@ app.post("/urls/:shortURL/delete", (req,res) => {
 app.post("/urls/:shortURL/edit", (req,res) => {
   let userId = users[req.cookies["user_id"]];
 
-  if (userId && userId.id === urlDatabase[req.params.shortURL].id) {
+  if (userId && userId.id === urlDatabase[req.params.shortURL].userID) {
   res.redirect("/urls/" + req.params.shortURL);
   } else {
   res.send('Not permitted to edit this URL!\n');
