@@ -5,18 +5,17 @@
   <title>Register</title>
   <% include partials/_header %>
 </head>
-<div>
-  <h3>Register</h3>
-
-  <form method = "POST" action="/register">
-    <input type = "email" name = "email" placeholder="Email">
-    <input type = "password" name = "password" placeholder="password">
-    <input type = "submit">
-  </form>
-</div>
-
-
 <body>
+  <div class= "d-flex justify-content-center">
+    <div class = "col-5 my-5">
+      <h2 style="text-align: center">Create Account</h3>
+      <form method = "POST" action="/register" class="form-signin">
+        <input type = "email" name = "email" placeholder="Email address" class="form-control">
+        <input type = "password" name = "password" placeholder="Password" class="form-control">
+        <button type = "submit" class="btn btn-lg btn-primary btn-block mt-2">Register</button>
+      </form>
+    </div>
+  </div>
  
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
