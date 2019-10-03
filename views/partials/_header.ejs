@@ -13,17 +13,20 @@
         <div class="navbar-nav">
           <a class="nav-item nav-link my-auto" href="/urls">My URLs</a>
           <a class="nav-item nav-link my-auto" href="/urls/new">Create New URL</a>
+
           <% if (user === undefined) { %>
+            
           <a class="nav-item nav-link my-auto" href="/register">Register</a>
           <a class="nav-item nav-link my-auto" href="/login">Login</a>
         
         <% } else { %>
       
-          <p class = "my-auto mx-3">Logged in: <%= user.email %></p>
+          <p class = "my-auto mr-3">Logged in: <%= user.email %></p>
           <form method = "POST" action = "/logout">
             <input type = "submit" class="btn btn-outline-primary" value="Logout">
           </form>
         </div>
+
           <% } %>
     </nav>
   </header>

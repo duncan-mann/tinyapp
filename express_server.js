@@ -35,11 +35,11 @@ app.get("/urls.json", (req,res) => {
 });
 
 app.get("/error", (req,res) =>{
-  let user = undefined
+  let user = undefined;
   let templateVars = {user};
 
   res.render("error", templateVars);
-})
+});
 
 app.get("/urls", (req,res) => {
   let user_id = req.session.user_id;
@@ -51,7 +51,7 @@ app.get("/urls", (req,res) => {
   // Redirect user to login page if not logged in
   if (user === undefined) {
     res.redirect("/error");
-  } 
+  }
   res.render("urls_index", templateVars);
 });
 
@@ -61,9 +61,9 @@ app.get("/urls/new", (req,res) => {
   if (user === undefined) {
     res.redirect("/login");
   } else {
-  let templateVars = {user};
-  res.render("urls_new", templateVars);
-  };
+    let templateVars = {user};
+    res.render("urls_new", templateVars);
+  }
 });
 
 app.get("/urls/:shortURL", (req,res) => {
@@ -73,27 +73,27 @@ app.get("/urls/:shortURL", (req,res) => {
   let templateVars = {shortURL: req.params.shortURL, urls, user};
   //Check to see if User is logged in, then if that user owns the URL that is being accessed.
   if (user !== undefined && urls[req.params.shortURL] !== undefined) {
-  res.render("urls_show", templateVars);
+    res.render("urls_show", templateVars);
   } else {
-  res.send("<h2>Not permitted to view this TinyURL!</h2><a href='/'>Login to view your URLs</a>");
+    res.send("<h2 style='text-align: center'>Not permitted to view this TinyURL!</h2><a href='/'>Login to view your URLs</a>");
   }
 });
 
 app.get("/register", (req, res) => {
   let user = users[req.session.user_id];
-  let templateVars = {user}
+  let templateVars = {user};
 
   if (user !== undefined) {
-    res.redirect("/urls"); 
+    res.redirect("/urls");
   } else {
-  res.render("register_user", templateVars);
+    res.render("register_user", templateVars);
   }
 });
 
 app.get("/login", (req, res) => {
 
   let user = users[req.session.user_id];
-  let templateVars = {user}
+  let templateVars = {user};
   //If user is already loggin in, redirect to URLS. If not, render login page.
   if (user !== undefined) {
     res.redirect("/urls");
@@ -105,17 +105,17 @@ app.get("/login", (req, res) => {
 
 app.get("/u/:shortURL", (req,res) => {
   if (!urlDatabase[req.params.shortURL]) {
-    res.send("<h2>Nope</h2><p>The requested link does not exist</p><a href='/'>Return</a>");
-  } 
-  const longURL = urlDatabase[req.params.shortURL].longURL
+    res.send("<a href ='/'><h2 style='text-align:center'>The requested link does not exist!</h2></a>");
+  }
+  const longURL = urlDatabase[req.params.shortURL].longURL;
   res.redirect(longURL);
 });
 
 app.post("/urls/:shortURL/delete", (req,res) => {
   let user = users[req.session.user_id];
   if (user && user.id === urlDatabase[req.params.shortURL].userID) {
-  delete urlDatabase[req.params.shortURL];
-  res.redirect("/urls");
+    delete urlDatabase[req.params.shortURL];
+    res.redirect("/urls");
   } else {
     res.send('Not permitted to delete this URL!');
   }
@@ -125,10 +125,10 @@ app.post("/urls/:shortURL/edit", (req,res) => {
   let user = users[req.session.user_id];
 
   if (user && user.id === urlDatabase[req.params.shortURL].userID) {
-  res.redirect("/urls/" + req.params.shortURL);
+    res.redirect("/urls/" + req.params.shortURL);
   } else {
-  res.send('<h2>Not permitted to edit this URL!\n<h2>');
-}
+    res.send('<h2>Not permitted to edit this URL!\n<h2>');
+  }
 });
 
 app.post("/urls/:shortURL/editURL", (req,res) => {
@@ -137,7 +137,7 @@ app.post("/urls/:shortURL/editURL", (req,res) => {
 });
 
 app.post("/urls", (req, res) => {
-  let random = generateRandomString()
+  let random = generateRandomString();
   let userID = req.session.user_id;
   let date = new Date();
   let dateString = date.toString().slice(0,15);
@@ -170,7 +170,7 @@ app.post("/logout", (req, res) => {
 
 app.post("/register", (req,res) => {
   let user = getUserByEmail(req.body.email, users);
-   //If user does not exist, then user === undefined
+  //If user does not exist, then user === undefined
   if (user !== undefined) {
     res.status(400);
     res.send('Email already registered!');
@@ -185,7 +185,7 @@ app.post("/register", (req,res) => {
     id: userId,
     email: req.body.email,
     password: hashedPassword
-  }
+  };
 
   res.redirect('/login');
 });
