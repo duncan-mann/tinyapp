@@ -4,9 +4,8 @@ const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 const app = express();
-const PORT = 8080; // default port 8080
+const PORT = 8080; 
 app.set("view engine", "ejs");
-// app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(cookieSession({
@@ -14,11 +13,13 @@ app.use(cookieSession({
   keys: ['id']
 }));
 
+//Define empty users object to store users upon registration
 const users = {};
 
+//Define URL Database which will store data inputed by all users on the application. The two object currently stored are an example of how the data will look to users.
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": {longURL: "http://www.lighthouselabs.ca", userID: 'd34Fnd', date: 'Thur Oct 3 2019'},
+  "9sm5xK": {longURL: "http://www.google.com", userID: 'wo34sX', date: 'Thur Oct 3 2019'}
 };
 
 
@@ -34,6 +35,7 @@ app.get("/urls.json", (req,res) => {
   res.json(urlDatabase);
 });
 
+// Error page is displayed in situations where users are not allowed to access certain pages.
 app.get("/error", (req,res) =>{
   let user = undefined;
   let templateVars = {user};
@@ -41,14 +43,15 @@ app.get("/error", (req,res) =>{
   res.render("error", templateVars);
 });
 
+// Home page for the application when logged in.
 app.get("/urls", (req,res) => {
   let user_id = req.session.user_id;
   let user = users[user_id];
-  //Use urlsForUser to create object full of URLs created by that specific user.
+  //urlsForUser function creates an object full of URLs created by that specific user.
   let userURLs = urlsForUser(user_id, urlDatabase);
   let templateVars = {urls: userURLs, user};
 
-  // Redirect user to login page if not logged in
+  // If user is not logged in, they will be redirected to the error page.
   if (user === undefined) {
     res.redirect("/error");
   }
@@ -69,8 +72,9 @@ app.get("/urls/new", (req,res) => {
 app.get("/urls/:shortURL", (req,res) => {
   let userID = req.session.user_id;
   let user = users[userID];
-  let urls = urlsForUser(userID, urlDatabase); //Creates an object with the URLs created by this user.
+  let urls = urlsForUser(userID, urlDatabase); 
   let templateVars = {shortURL: req.params.shortURL, urls, user};
+
   //Check to see if User is logged in, then if that user owns the URL that is being accessed.
   if (user !== undefined && urls[req.params.shortURL] !== undefined) {
     res.render("urls_show", templateVars);
@@ -94,7 +98,8 @@ app.get("/login", (req, res) => {
 
   let user = users[req.session.user_id];
   let templateVars = {user};
-  //If user is already loggin in, redirect to URLS. If not, render login page.
+
+//If user is already loggin in, redirect to URLS. If not, render login page.
   if (user !== undefined) {
     res.redirect("/urls");
   } else {
@@ -113,6 +118,7 @@ app.get("/u/:shortURL", (req,res) => {
 
 app.post("/urls/:shortURL/delete", (req,res) => {
   let user = users[req.session.user_id];
+
   if (user && user.id === urlDatabase[req.params.shortURL].userID) {
     delete urlDatabase[req.params.shortURL];
     res.redirect("/urls");
@@ -175,7 +181,7 @@ app.post("/register", (req,res) => {
     res.status(400);
     res.send('Email already registered!');
   }
-
+// Checks if email or password being registered is an empty string
   checkEmptyEmails(req, res);
 
   let hashedPassword = bcrypt.hashSync(req.body.password, 10);
