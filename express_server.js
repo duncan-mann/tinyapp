@@ -1,4 +1,4 @@
-const {checkEmptyEmails, getUserByEmail} = require('./helpers.js');
+const {checkEmptyEmails, getUserByEmail, generateRandomString, urlsForUser} = require('./helpers.js');
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
@@ -21,50 +21,23 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-function generateRandomString() {
-  var result           = '';
-  var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  var charactersLength = characters.length;
-  for ( var i = 0; i < 6; i++ ) {
-     result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-}
 
-// function checkEmptyEmails(req, res) {
+// function urlsForUser(id) {
 
-//   if (req.body.email === '' || req.body.password === '') {
-//     res.status(404);
-//     res.send('Invalid email or password!');
-//     // return true;
-//   };
-// };
-
-// function getUserByEmail(email, Users) {
-//   for (user in Users) {
-//     if (email === Users[user].email) {
-//       return user;
-//     }
+//   let userURLs = {};
+  
+//   for (let url in urlDatabase) {
+//     if (urlDatabase[url].userID === id) {
+//       userURLs[url] = urlDatabase[url].longURL;
+//     } 
 //   }
+
+//   if (id === undefined) {
+//     userURLs = {}; // Resets userURLs after a user logs out and user_id cookie is cleared. 
+//   }
+  
+//   return userURLs;
 // };
-
-
-function urlsForUser(id) {
-
-  let userURLs = {};
-  
-  for (let url in urlDatabase) {
-    if (urlDatabase[url].userID === id) {
-      userURLs[url] = urlDatabase[url].longURL;
-    } 
-  }
-
-  if (id === undefined) {
-    userURLs = {}; // Resets userURLs after a user logs out and user_id cookie is cleared. 
-  }
-  
-  return userURLs;
-};
 
 app.get("/", (req, res) => {
   res.redirect("/urls");
@@ -87,7 +60,7 @@ app.get("/urls", (req,res) => {
     res.redirect("/login");
   } 
   //Use urlsForUser to create object full of URLs created by that specific user.
-  let userURLs = urlsForUser(user_id);
+  let userURLs = urlsForUser(user_id, urlDatabase);
 
   let templateVars = {urls: userURLs, user};
   res.render("urls_index", templateVars);
