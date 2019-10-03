@@ -1,6 +1,6 @@
+const {checkEmptyEmails, getUserByEmail} = require('./helpers.js');
 const express = require("express");
 const bodyParser = require("body-parser");
-// const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 const app = express();
@@ -31,22 +31,22 @@ function generateRandomString() {
   return result;
 }
 
-function checkEmptyEmails(req, res) {
+// function checkEmptyEmails(req, res) {
 
-  if (req.body.email === '' || req.body.password === '') {
-    res.status(404);
-    res.send('Invalid email or password!');
-    // return true;
-  };
-};
+//   if (req.body.email === '' || req.body.password === '') {
+//     res.status(404);
+//     res.send('Invalid email or password!');
+//     // return true;
+//   };
+// };
 
-function getUserByEmail(email, Users) {
-  for (user in Users) {
-    if (email === Users[user].email) {
-      return user;
-    }
-  }
-}
+// function getUserByEmail(email, Users) {
+//   for (user in Users) {
+//     if (email === Users[user].email) {
+//       return user;
+//     }
+//   }
+// };
 
 
 function urlsForUser(id) {
