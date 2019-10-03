@@ -79,7 +79,7 @@ app.get("/urls/:shortURL", (req,res) => {
   if (user !== undefined && urls[req.params.shortURL] !== undefined) {
     res.render("urls_show", templateVars);
   } else {
-    res.send("<h2 style='text-align: center'>Not permitted to view this TinyURL!</h2><a href='/'>Login to view your URLs</a>");
+    res.send("<h2>Not permitted to view this TinyURL!</h2><a href='/'>Login to view your URLs</a>");
   }
 });
 
