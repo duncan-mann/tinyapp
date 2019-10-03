@@ -31,7 +31,7 @@ function urlsForUser(id, database) {
   
   for (let url in database) {
     if (database[url].userID === id) {
-      userURLs[url] = database[url].longURL;
+      userURLs[url] = {longURL: database[url].longURL, date : database[url].date}
     } 
   }
 
