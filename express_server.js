@@ -31,21 +31,13 @@ function generateRandomString() {
   return result;
 }
 
-function checkEmails(req, res) {
+function checkEmptyEmails(req, res) {
 
   if (req.body.email === '' || req.body.password === '') {
     res.status(404);
     res.send('Invalid email or password!');
-    return true;
+    // return true;
   };
-
-  for(let user in users) {
-    if (req.body.email === users[user].email) {
-      res.status(400);
-      res.send('Email already registered!');
-      return true;
-    }
-  }
 };
 
 function getUserByEmail(email, Users) {
@@ -54,7 +46,6 @@ function getUserByEmail(email, Users) {
       return user;
     }
   }
-  throw "User not found with specified email."
 }
 
 
@@ -199,10 +190,15 @@ app.post("/logout", (req, res) => {
 });
 
 app.post("/register", (req,res) => {
+  let user = getUserByEmail(req.body.email, users); //if user does not exist, then user === undefined
+  if (user !== undefined) {
+    res.status(400);
+    res.send('Email already registered!');
+  }
+  checkEmptyEmails(req, res);
+  //Test to see if exisiting user/empty feilds on registration
+
   let hashedPassword = bcrypt.hashSync(req.body.password, 10);
-  if (checkEmails(req, res)) {
-    return;
-  };
 
   const userId = generateRandomString();
   users[userId] = {
