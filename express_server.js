@@ -49,21 +49,22 @@ function getUserByEmail(email, Users) {
 }
 
 
-  function urlsForUser(id) {
+function urlsForUser(id) {
 
-    let userURLs = {};
+  let userURLs = {};
   
-    for (let url in urlDatabase) {
-      if (urlDatabase[url].userID === id) {
-        userURLs[url] = urlDatabase[url].longURL;
-      } 
-    }
+  for (let url in urlDatabase) {
+    if (urlDatabase[url].userID === id) {
+      userURLs[url] = urlDatabase[url].longURL;
+    } 
+  }
+
+  if (id === undefined) {
+    userURLs = {}; // Resets userURLs after a user logs out and user_id cookie is cleared. 
+  }
   
-    if (id === undefined) {
-      userURLs = {}; // Resets userURLs after a user logs out and user_id cookie is cleared.
-    }
-    return userURLs;
-  };
+  return userURLs;
+};
 
 app.get("/", (req, res) => {
   res.redirect("/urls");
@@ -162,17 +163,9 @@ app.post("/urls", (req, res) => {
     longURL: req.body.longURL,
     userID
   };
-  // console.log(users[user], urlDatabase[random]);
+
   res.redirect(`/urls/${random}`);
 });
-
-// function getUserByEmail(email, Users) {
-//   for (user in Users) {
-//     if (email === Users[user].email) {
-//       return user;
-//     }
-//   }
-// }
 
 app.post("/loginUser", (req,res) => {
   let user = getUserByEmail(req.body.email, users);
@@ -190,13 +183,13 @@ app.post("/logout", (req, res) => {
 });
 
 app.post("/register", (req,res) => {
-  let user = getUserByEmail(req.body.email, users); //if user does not exist, then user === undefined
+  let user = getUserByEmail(req.body.email, users);
+   //If user does not exist, then user === undefined
   if (user !== undefined) {
     res.status(400);
     res.send('Email already registered!');
   }
   checkEmptyEmails(req, res);
-  //Test to see if exisiting user/empty feilds on registration
 
   let hashedPassword = bcrypt.hashSync(req.body.password, 10);
 
