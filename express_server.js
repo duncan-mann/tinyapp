@@ -126,7 +126,6 @@ app.get("/register", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  console.log(users);
   let user = users[req.session.user_id];
   let templateVars = {user}
   res.render("login", templateVars);
@@ -139,9 +138,7 @@ app.get("/u/:shortURL", (req,res) => {
 
 
 app.post("/urls/:shortURL/delete", (req,res) => {
-  console.log(req.params.shortURL);
   let user = users[req.session.user_id];
-  console.log('userId', user);
   if (user && user.id === urlDatabase[req.params.shortURL].userID) {
   delete urlDatabase[req.params.shortURL];
   res.redirect("/urls");
