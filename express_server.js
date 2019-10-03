@@ -178,15 +178,22 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${random}`);
 });
 
+// function getUserByEmail(email, Users) {
+//   for (user in Users) {
+//     if (email === Users[user].email) {
+//       return user;
+//     }
+//   }
+// }
+
 app.post("/loginUser", (req,res) => {
- console.log()
-  for(let user in users) {
-    if (req.body.email === users[user].email && bcrypt.compareSync(req.body.password, users[user].password)) {
-      req.session.user_id = user;
-      res.redirect("/urls");
-    }
-  } 
-  res.send("Incorrect email/password!");
+  let user = getUserByEmail(req.body.email, users);
+  if (user !== undefined && bcrypt.compareSync(req.body.password, users[user].password)) {
+    req.session.user_id = user;
+    res.redirect("/urls");
+  } else {
+    res.send("Incorrect email/password!");
+  }
 });
 
 app.post("/logout", (req, res) => {
@@ -206,7 +213,6 @@ app.post("/register", (req,res) => {
     email: req.body.email,
     password: hashedPassword
   }
-  console.log(users[userId]);
   res.redirect('/urls');
 
 });
