@@ -54,8 +54,9 @@ app.get("/urls", (req,res) => {
   // If user is not logged in, they will be redirected to the error page.
   if (user === undefined) {
     res.redirect("/error");
-  }
+  } else {
   res.render("urls_index", templateVars);
+  }
 });
 
 app.get("/urls/new", (req,res) => {
